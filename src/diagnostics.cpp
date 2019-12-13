@@ -597,7 +597,7 @@ static bool handleAuthorizedCommand(DiagnosticsManager* manager,
                 request.payload_length);
     }
 
-    //request.has_pid = true;
+    request.has_pid = true;			// gja changed
     request.pid = commandRequest->pid;
 
     DiagnosticResponseDecoder decoder = NULL;
