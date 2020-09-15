@@ -1,7 +1,7 @@
 # OpenXC Vehicle Interface Firmware Changelog
 
 ## v8.1.0
-* BREAKING: VI-Firmware 8.0.0 is not backwards compatable due to stitched diagnostic responses and must be used with OpenXC-Python 2.1.0 or greater.
+* BREAKING: VI-Firmware 8.1.0 is not backwards compatable due to stitched diagnostic responses and must be used with OpenXC-Python 2.1.0 or greater.
 * Fix: Crash with C5 Ble
 * Fix: Modem Configuration fixed set proper baud rate for C5 Cellular
 * Fix: Updates to ISOTP and UDS libraries to support diagnostic repsonse stitch release
