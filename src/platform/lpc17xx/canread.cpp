@@ -25,13 +25,24 @@ CanMessage receiveCanMessage(CanBus* bus) {
     return result;
 }
 
+void dumpPayload2(unsigned char *, size_t);
+
 extern "C" {
 
 void CAN_IRQHandler() {
     for(int i = 0; i < getCanBusCount(); i++) {
         CanBus* bus = &getCanBuses()[i];
         CanMessage message = receiveCanMessage(bus);
+
+        char buff[10];
+        if (message.id >= 0x7df && message.id <= 0x7ef) {
+            sprintf(buff,"^%4.4x",(int)message.id);
+            debug(buff);
+            dumpPayload2(message.data, 8);
+        }
+
         if(((CAN_IntGetStatus(CAN_CONTROLLER(bus)) & 0x01) == 1) || (message.format == CanMessageFormat::STANDARD)) {
+//        if((CAN_IntGetStatus(CAN_CONTROLLER(bus)) & 0x01) == 1) {
             if(shouldAcceptMessage(bus, message.id) &&
                     !QUEUE_PUSH(CanMessage, &bus->receiveQueue, message)) {
                 // An exception to the "don't leave commented out code" rule,

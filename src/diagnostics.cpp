@@ -471,10 +471,34 @@ static void relayDiagnosticResponse(DiagnosticsManager* manager,
     }
 }
 
+void dumpPayload2(unsigned char *payload, size_t length) {
+    int finished = 0;
+    size_t offset = 0;
+    const size_t MAX = 12;
+    while(!finished) {
+        char buf[26];
+        buf[0] = 0;
+        size_t l = length-offset;
+        if (l > MAX)
+            l = MAX;
+        for(size_t i=0; i<l; i++) {
+            buf[i*2]= ((payload[i+offset]>>4) > 9) ? (payload[i+offset]>>4) + 'A' - 10 : (payload[i+offset]>>4) + '0';
+            buf[i*2+1]=((payload[i+offset]&0xf) > 9) ? (payload[i+offset]&0x0f)+ 'A' - 10 : (payload[i+offset]&0xf) + '0';
+            buf[i*2+2]=0;
+        }
+        debug(buf);
+        offset += MAX;
+        if (offset >= length) finished = 1;
+    }
+}
+
 static void receiveCanMessage(DiagnosticsManager* manager,
         CanBus* bus,
         ActiveDiagnosticRequest* entry,
         CanMessage* message, Pipeline* pipeline) {
+
+    debug("rCM:");
+    dumpPayload2(message->data, message->length);
 
     if (bus == entry->bus && entry->inFlight) {
         DiagnosticResponse response = diagnostic_receive_can_frame(
